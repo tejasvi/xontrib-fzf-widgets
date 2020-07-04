@@ -4,6 +4,7 @@ import subprocess
 from xonsh.history.main import history_main
 from xonsh.completers.path import complete_path
 from prompt_toolkit.keys import Keys
+import xontrib
 
 __all__ = ()
 
@@ -130,3 +131,29 @@ def custom_keybindings(bindings, **kw):
     @handler('fzf_dir_binding')
     def fzf_dir(event):
         fzf_insert_file(event, True)
+
+    @handler('fzf_z_binding')
+    def fzf_z(event):
+        bookmarks = Path(
+            __xonsh__.env.get(
+                "SHELL_BOOKMARKS",
+                os.path.expanduser("~/.shell_bookmarks")
+            )
+        )
+
+        if bookmarks.is_file():
+            with open(bookmarks, "r") as f:
+                bookmark_items = f.read()
+        else:
+            bookmark_items = ""
+
+        try:
+            z_items = xontrib.z.ZHandler.handler(['-l', ''])
+        except AttributeError:
+            z_items = ''
+
+        items = bookmark_items + z_items
+
+        choice = fzf_prompt_from_string(items)
+        event.cli.renderer.erase()
+        event.current_buffer.insert_text(f"'{choice}'")
