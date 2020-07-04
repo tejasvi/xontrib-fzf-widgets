@@ -134,6 +134,9 @@ def custom_keybindings(bindings, **kw):
 
     @handler('fzf_z_binding')
     def fzf_z(event):
+
+        current_dir_listing = '\n'.join(os.listdir())
+
         bookmarks = Path(
             __xonsh__.env.get(
                 "SHELL_BOOKMARKS",
@@ -143,17 +146,18 @@ def custom_keybindings(bindings, **kw):
 
         if bookmarks.is_file():
             with open(bookmarks, "r") as f:
-                bookmark_items = f.read()
+                bookmark_items = f.read().rstrip()
         else:
             bookmark_items = ""
 
         try:
-            z_items = xontrib.z.ZHandler.handler(['-l', ''])
+            z_items = xontrib.z.ZHandler.handler(["-l", ""])
         except AttributeError:
-            z_items = ''
+            z_items = ""
 
-        items = bookmark_items + z_items
+        items = "\n".join([current_dir_listing, bookmark_items, z_items])
 
         choice = fzf_prompt_from_string(items)
-        event.cli.renderer.erase()
-        event.current_buffer.insert_text(f"'{choice}'")
+        if choice:
+            event.cli.renderer.erase()
+            event.current_buffer.insert_text(f"'{choice}'")
