@@ -158,6 +158,9 @@ def custom_keybindings(bindings, **kw):
         items = "\n".join([current_dir_listing, bookmark_items, z_items])
 
         choice = fzf_prompt_from_string(items)
+
+        # Redraw the shell because fzf used alternate mode
+        event.cli.renderer.erase()
+
         if choice:
-            event.cli.renderer.erase()
             event.current_buffer.insert_text(f"'{choice}'")
