@@ -4,6 +4,7 @@ import subprocess
 from xonsh.history.main import history_main
 from xonsh.completers.path import complete_path
 from prompt_toolkit.keys import Keys
+from pathlib import Path
 import xontrib
 
 __all__ = ()
