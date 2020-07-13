@@ -23,6 +23,13 @@ def get_fzf_binary_path():
     return path
 
 
+def get_cursor_prefix(event):
+    before_cursor = event.current_buffer.document.current_line_before_cursor
+    delim_pos = before_cursor.rfind(' ', 0, len(before_cursor))
+    if delim_pos != -1 and delim_pos != len(before_cursor) - 1:
+        return before_cursor[delim_pos+1:]
+
+
 def fzf_insert_history(event):
     # Run fzf, feeding it the xonsh history
     # fzf prints the user's choice on stdout.
@@ -156,7 +163,19 @@ def custom_keybindings(bindings, **kw):
 
         items = "\n".join(bookmark_items + z_items)
 
-        choice = fzf_prompt_from_string(items)
+        args = [get_fzf_binary_path(),'--tiebreak=index', '+m', '--reverse', '--height=40%']
+        prefix = get_cursor_prefix(event)
+        if prefix:
+            args.append(f'-q {prefix}')
+
+        choice = subprocess.run(
+            args,
+            input=items,
+            stdout=subprocess.PIPE,
+            universal_newlines=True).stdout.strip()
+
+        if prefix:
+            event.current_buffer.delete_before_cursor(len(prefix))
 
         # Redraw the shell because fzf used alternate mode
         event.cli.renderer.erase()
