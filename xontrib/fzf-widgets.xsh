@@ -136,8 +136,6 @@ def custom_keybindings(bindings, **kw):
     @handler('fzf_z_binding')
     def fzf_z(event):
 
-        current_dir_listing = os.listdir()
-
         bookmarks = Path(
             __xonsh__.env.get(
                 "SHELL_BOOKMARKS",
@@ -156,7 +154,7 @@ def custom_keybindings(bindings, **kw):
         except AttributeError:
             z_items = []
 
-        items = "\n".join(current_dir_listing + bookmark_items + z_items)
+        items = "\n".join(bookmark_items + z_items)
 
         choice = fzf_prompt_from_string(items)
 
