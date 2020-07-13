@@ -25,6 +25,13 @@ Current widgets
 - **history insert:** Search in all history entries and insert the chosen command to the prompt.
 - **find file:** Find one or more files in the current directory and its sub-directories.
 - **find directory:** Similar to the previous one, but intended to only search for directories.
+- **z:** Search the combination of (displayed in this order):
+
+  - Any paths listed in a 'bookmark' file located at `$SHELL_BOOKMARKS` (defaults to `~/.shell_bookmarks`)
+  - The output of `z -l .`, if `xontrib-z <https://github.com/astronouth7303/xontrib-z>`_ is loaded.
+
+  This widget is loosely based on the `fzf-z plugin <https://github.com/andrewferrier/fzf-z>`_ for `zsh`.
+
 
 How to use it
 ----------------
@@ -49,6 +56,7 @@ And set your desired keybindings for each widget in `~/.xonshrc` file or set it 
     $fzf_ssh_binding = "c-s"      # Ctrl+S
     $fzf_file_binding = "c-t"      # Ctrl+T
     $fzf_dir_binding = "c-g"      # Ctrl+G
+    $fzf_z_binding = "c-p"      # Ctrl+P
 
 You can find the names of various keys here_ in ``python-prompt-toolkit``.
 
