@@ -27,10 +27,10 @@ Current widgets
 - **find directory:** Similar to the previous one, but intended to only search for directories.
 - **z:** Search the combination of (displayed in this order):
 
-  - Any paths listed in a 'bookmark' file located at `$SHELL_BOOKMARKS` (defaults to `~/.shell_bookmarks`)
-  - The output of `z -l .`, if `xontrib-z <https://github.com/astronouth7303/xontrib-z>`_ is loaded.
+  - Any paths listed in a 'bookmark' file located at ``$SHELL_BOOKMARKS`` (defaults to ``~/.shell_bookmarks``)
+  - The output of ``z -l .``, if `xontrib-z <https://github.com/astronouth7303/xontrib-z>`_ is loaded.
 
-  This widget is loosely based on the `fzf-z plugin <https://github.com/andrewferrier/fzf-z>`_ for `zsh`.
+  This widget is loosely based on the `fzf-z plugin <https://github.com/andrewferrier/fzf-z>`_ for ``zsh``.
 
 
 How to use it
