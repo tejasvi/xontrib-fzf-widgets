@@ -5,6 +5,7 @@ from xonsh.history.main import history_main
 from xonsh.completers.path import complete_path
 from prompt_toolkit.keys import Keys
 from pathlib import Path
+from xonsh import built_ins
 import xontrib
 
 __all__ = ()
@@ -26,7 +27,9 @@ def get_fzf_binary_path():
 def get_cursor_prefix(event):
     before_cursor = event.current_buffer.document.current_line_before_cursor
     delim_pos = before_cursor.rfind(' ', 0, len(before_cursor))
-    if delim_pos != -1 and delim_pos != len(before_cursor) - 1:
+    if delim_pos == -1 and len(before_cursor):
+        return before_cursor[:len(before_cursor)]
+    if delim_pos != len(before_cursor) - 1:
         return before_cursor[delim_pos+1:]
 
 
@@ -152,7 +155,7 @@ def custom_keybindings(bindings, **kw):
 
         if bookmarks.is_file():
             with open(bookmarks, "r") as f:
-                bookmark_items = [_.rstrip() for _ in f]
+                bookmark_items = [_.rstrip() for _ in f if _]
         else:
             bookmark_items = []
 
@@ -174,11 +177,20 @@ def custom_keybindings(bindings, **kw):
             stdout=subprocess.PIPE,
             universal_newlines=True).stdout.strip()
 
-        if prefix:
-            event.current_buffer.delete_before_cursor(len(prefix))
-
         # Redraw the shell because fzf used alternate mode
         event.cli.renderer.erase()
 
-        if choice:
-            event.current_buffer.insert_text(f"'{choice}'")
+        if not choice:
+            return
+
+        if prefix:
+            event.current_buffer.delete_before_cursor(len(prefix))
+
+        if (
+            event.current_buffer.document.cursor_position == 0 and
+            os.path.isdir(choice)
+        ):
+            xonsh.built_ins.cd([choice])
+            return
+
+        event.current_buffer.insert_text(f"'{choice}'")
