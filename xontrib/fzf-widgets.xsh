@@ -6,7 +6,13 @@ from xonsh.completers.path import complete_path
 from prompt_toolkit.keys import Keys
 from pathlib import Path
 from xonsh import built_ins
+from prompt_toolkit.application.current import get_app
 import xontrib
+try:
+    from xonsh.ptk.key_bindings import carriage_return
+except ImportError:
+    from xonsh.ptk_shell.key_bindings import carriage_return
+
 
 __all__ = ()
 
@@ -143,6 +149,7 @@ def custom_keybindings(bindings, **kw):
     def fzf_dir(event):
         fzf_insert_file(event, True)
 
+
     @handler('fzf_z_binding')
     def fzf_z(event):
 
@@ -190,7 +197,8 @@ def custom_keybindings(bindings, **kw):
             event.current_buffer.document.cursor_position == 0 and
             os.path.isdir(choice)
         ):
-            xonsh.built_ins.cd([choice])
+            built_ins.builtins.aliases['cd']([choice])
+            carriage_return(event.current_buffer, event.cli)
             return
 
         event.current_buffer.insert_text(f"'{choice}'")
