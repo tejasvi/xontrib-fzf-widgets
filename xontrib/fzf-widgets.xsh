@@ -7,6 +7,7 @@ from prompt_toolkit.keys import Keys
 from pathlib import Path
 from xonsh import built_ins
 from prompt_toolkit.application.current import get_app
+from xonsh.xoreutils.which import which
 import xontrib
 try:
     from xonsh.ptk.key_bindings import carriage_return
@@ -173,7 +174,27 @@ def custom_keybindings(bindings, **kw):
 
         items = "\n".join(bookmark_items + z_items)
 
-        args = [get_fzf_binary_path(),'--tiebreak=index', '+m', '--reverse', '--height=40%']
+        args = [
+            get_fzf_binary_path(),
+            '--tiebreak=index',
+            '+m',
+            '--reverse',
+            '--height=40%',
+        ]
+        # Preview command
+        if not which(['exa']):
+            args += [
+                "--preview",
+                "![test -d {}] and exa --level 2 --tree --color=always --group-directories-first {}"
+            ]
+        if not which(['tree']):
+            args += [
+                '--preview',
+                "![test -d {}] and tree -C -L 2 -x --noreport --dirsfirst {}"
+            ]
+        else:
+            args += ["--preview", "ls -l {}"]
+
         prefix = get_cursor_prefix(event)
         if prefix:
             args.append(f'-q {prefix}')
