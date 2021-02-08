@@ -182,15 +182,15 @@ def custom_keybindings(bindings, **kw):
             '--height=40%',
         ]
         # Preview command
-        if not which(['exa']):
+        if !(which exa):
             args += [
                 "--preview",
-                "![test -d {}] and exa --level 2 --tree --color=always --group-directories-first {}"
+                "exa --level 2 --tree --color=always --group-directories-first {}"
             ]
-        if not which(['tree']):
+        if !(which tree):
             args += [
                 '--preview',
-                "![test -d {}] and tree -C -L 2 -x --noreport --dirsfirst {}"
+                "tree -C -L 2 -x --noreport --dirsfirst {}"
             ]
         else:
             args += ["--preview", "ls -l {}"]
